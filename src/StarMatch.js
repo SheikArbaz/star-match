@@ -5,7 +5,7 @@ import {PlayNumber} from "./PlayNumber";
 import {StarsDisplay} from "./StarsDisplay";
 import {PlayAgain} from "./PlayAgain";
 
-const Game = ({startNewGame}) => {
+const useGameState = () => {
     const [stars, setStars] = useState(utils.random(1, 9));
     const [availableNums, setAvailableNums] = useState(utils.range(1, 9));
     const [candidateNums, setCandidateNums] = useState([]);
@@ -22,6 +22,22 @@ const Game = ({startNewGame}) => {
         }
     );
 
+    const setGameState = (newCandidateNums) => {
+        if (utils.sum(newCandidateNums) !== stars) {
+            setCandidateNums(newCandidateNums);
+        } else {
+            const newAvailableNums = availableNums.filter(
+                n => !newCandidateNums.includes(n)
+            );
+            setStars(utils.randomSumIn(newAvailableNums, 9));
+            setAvailableNums(newAvailableNums);
+            setCandidateNums([]);
+        }
+    };
+    return {stars, availableNums, candidateNums, secondsLeft, setGameState}
+};
+const Game = ({startNewGame}) => {
+    const {stars, availableNums, candidateNums, secondsLeft, setGameState} = useGameState();
     const candidatesAreWrong = utils.sum(candidateNums) > stars;
     const gameStatus = availableNums.length === 0 ? 'won'
         : secondsLeft === 0 ? 'lost' : 'active';
@@ -45,17 +61,7 @@ const Game = ({startNewGame}) => {
             currentStatus === 'available'
                 ? candidateNums.concat(number)
                 : candidateNums.filter(cn => cn !== number);
-
-        if (utils.sum(newCandidateNums) !== stars) {
-            setCandidateNums(newCandidateNums);
-        } else {
-            const newAvailableNums = availableNums.filter(
-                n => !newCandidateNums.includes(n)
-            );
-            setStars(utils.randomSumIn(newAvailableNums, 9));
-            setAvailableNums(newAvailableNums);
-            setCandidateNums([]);
-        }
+        setGameState(newCandidateNums);
     };
     return (
         <div className="game">
@@ -90,4 +96,4 @@ const Game = ({startNewGame}) => {
 export const StarMatch = () => {
     const [gameId, setGameId] = useState(1);
     return <Game key={gameId} startNewGame={() => setGameId(gameId + 1)}/>
-}
+};
