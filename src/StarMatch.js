@@ -5,7 +5,7 @@ import {PlayNumber} from "./PlayNumber";
 import {StarsDisplay} from "./StarsDisplay";
 import {PlayAgain} from "./PlayAgain";
 
-export const StarMatch = () => {
+const Game = ({startNewGame}) => {
     const [stars, setStars] = useState(utils.random(1, 9));
     const [availableNums, setAvailableNums] = useState(utils.range(1, 9));
     const [candidateNums, setCandidateNums] = useState([]);
@@ -25,13 +25,6 @@ export const StarMatch = () => {
     const candidatesAreWrong = utils.sum(candidateNums) > stars;
     const gameStatus = availableNums.length === 0 ? 'won'
         : secondsLeft === 0 ? 'lost' : 'active';
-
-    const resetGame = () => {
-        setStars(utils.random(1, 9));
-        setAvailableNums(utils.range(1, 9));
-        setCandidateNums([]);
-        setSecondsLeft(10);
-    };
 
     const numberStatus = (number) => {
         if (!availableNums.includes(number)) {
@@ -72,7 +65,7 @@ export const StarMatch = () => {
             <div className="body">
                 <div className="left">
                     {gameStatus !== 'active'
-                        ? <PlayAgain onClick={resetGame} gameStatus={gameStatus}/>
+                        ? <PlayAgain onClick={startNewGame} gameStatus={gameStatus}/>
                         : <StarsDisplay count={stars}/>}
 
                 </div>
@@ -93,3 +86,8 @@ export const StarMatch = () => {
         </div>
     );
 };
+
+export const StarMatch = () => {
+    const [gameId, setGameId] = useState(1);
+    return <Game key={gameId} startNewGame={() => setGameId(gameId + 1)}/>
+}
