@@ -6,7 +6,7 @@ export const PlayAgain = ({onClick, gameStatus}) => (
         <div
             className="message"
             style={{color: gameStatus === 'lost' ? 'red': 'green'}}
-        >Game is {gameStatus}</div>
+        >{gameStatus === 'lost' ? 'Lost': 'Nice' }</div>
         <button onClick={onClick}>Play Again</button>
     </div>
 );
