@@ -1,8 +1,8 @@
 import React from "react";
 
-export const PlayNumber = ({number, status}) => (
+export const PlayNumber = ({number, status, onClick}) => (
     <button className="number"
-            onClick={() => console.log(number)}
+            onClick={() => onClick(number, status)}
             style={{backgroundColor: colors[status]}}
     >
         {number}
